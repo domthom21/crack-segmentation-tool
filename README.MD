@@ -36,6 +36,16 @@ to install libraries:
 conda install agd
 conda install -c agd-lbr hfm=0.2.13
 ```
+
+```console
+git clone https://github.com/Mirebeau/HamiltonFastMarching.git
+cd HamiltonFastMarching
+mkdir build
+cd build
+cmake ../Interfaces/FileHFM
+# make/run Visual Studio
+
+```
 ## Cite
 If you use this code or the app in your own work please cite our paper:
 
