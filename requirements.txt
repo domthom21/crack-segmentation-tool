@@ -1,0 +1,7 @@
+agd
+PyQt5
+scikit-image
+numpy
+opencv-python
+matplotlib
+plotly
