@@ -613,7 +613,8 @@ def track_crop_to_full(track_crop,start_point,end_point,sides1,sides2):
 def get_files(folder = 'cracktools/crackimages',formats = ['png','jpg'],basename = True):
     files = []
     for f in formats:
-        for file in glob.glob(folder+"/*."+f):
+        for file in sorted(glob.glob(folder+"/*."+f), key=len):
+            file = file.replace("\\", "/")
             if basename == True:
                 files.append(os.path.basename(file))
             elif basename == False:

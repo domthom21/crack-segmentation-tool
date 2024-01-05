@@ -19,7 +19,7 @@ import json
 import os
 from skimage.segmentation import mark_boundaries
 import os
-from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtWidgets import QListWidgetItem, QFileDialog
 
 from PyQt5.QtWidgets import QMessageBox
 def error():
@@ -87,13 +87,17 @@ class CrackToolsApplication(Ui_MainWindow):
 ####################### Select Image Tab ########################################
     def select_folder(self):
         try:
-            dir = self.folder_line_edit.text().replace(" \ ", "/" )
-            self.image_names = ct.tools.get_files(folder = dir,formats = ['jpg','png'],basename = False)
+            #dir = self.folder_line_edit.text().replace(" \ ", "/" )
+            dir = str(
+                QFileDialog.getExistingDirectory(None, "Select Directory"))
+            filenames = ct.tools.get_files(folder = dir,formats = ['jpg','png', 'tiff'],basename = False)
+            self.image_names = filenames
             for filename in self.image_names:
                 self.files_list.addItem(os.path.basename(filename))
             self.n = 0
             self.change_image()
-        except:
+        except Exception as e:
+            print(e)
             error()
 
     def name_selected(self):
@@ -122,7 +126,8 @@ class CrackToolsApplication(Ui_MainWindow):
                 color = (1,1,1)
             self.update_selected_item(os.path.basename(self.image_names[self.n]))
             self.name = self.image_names[self.n]
-            self.image = cv2.imread(self.name)[:,:,::-1].astype(np.uint8)
+            #self.image = cv2.imread(self.name)[:,:,::-1].astype(np.uint8)
+            self.image = cv2.imread(self.name)
             self.original_image = self.image.copy()
             self.filename_label_2.setText(os.path.basename(self.name))
 
@@ -196,7 +201,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.crack_tracks = {}
             self.n = self.n + 1
             self.change_image()
-        except:
+        except Exception as e:
+            print(e)
             error()
 
     def previous_image(self):
@@ -209,7 +215,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.crack_tracks = {}
             self.n = self.n - 1
             self.change_image()
-        except:
+        except Exception as e:
+            print(e)
             error()
         
     def draw_box(self):
@@ -274,7 +281,8 @@ class CrackToolsApplication(Ui_MainWindow):
         try:
             self.image_size = self.select_image_size.value()
             _,_ = ct.tools.Draw().bounding_box(self.image[:,:,::-1],self.image_size)
-        except:
+        except Exception as e:
+            print(e)
             error()
 ################################################################################################################
 
@@ -290,7 +298,8 @@ class CrackToolsApplication(Ui_MainWindow):
             else:
                 self.update_image_crop_button.setStyleSheet("background-color : red")
                 self.middle_point_button.setStyleSheet("background-color : red")
-        except :
+        except Exception as e:
+            print(e)
             error()
             self.update_image_crop_button.setStyleSheet("background-color : red")
             self.middle_point_button.setStyleSheet("background-color : red")
@@ -329,7 +338,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.x_size_show.display(self.image_crop_down.shape[1])
             self.y_size_show.display(self.image_crop_down.shape[0])
             self.update_os_button.setStyleSheet("background-color : lightblue")
-        except :
+        except Exception as e:
+            print(e)
             error()
             self.update_os_button.setStyleSheet("background-color : red")
 
@@ -358,7 +368,8 @@ class CrackToolsApplication(Ui_MainWindow):
             pixmap = QPixmap.fromImage(qimage)
             scaled_pixmap = pixmap.scaled(self.wavelet_check_display.width(), self.wavelet_check_display.height(), Qt.KeepAspectRatio, Qt.FastTransformation)
             self.wavelet_check_display.setPixmap(scaled_pixmap)
-        except:
+        except Exception as e:
+            print(e)
             error()
 
     def select_middle_point(self):
@@ -368,7 +379,8 @@ class CrackToolsApplication(Ui_MainWindow):
             mid_pt = ct.tools.Draw().points(self.image[:,:,::-1],self.image_size,move_x = 0,move_y = 0)
             self.mid_pt = (int(mid_pt[0][0]/downsample_factor),int(mid_pt[0][1]/downsample_factor))
             self.middpoint_update_button.setStyleSheet("background-color : lightblue")
-        except :
+        except Exception as e:
+            print(e)
             error()
             self.middpoint_update_button.setStyleSheet("background-color : red")
 
@@ -399,7 +411,8 @@ class CrackToolsApplication(Ui_MainWindow):
             pixmap = QPixmap.fromImage(qimage)
             scaled_pixmap = pixmap.scaled(self.middlepoint_display.width(), self.middlepoint_display.height(), Qt.KeepAspectRatio, Qt.FastTransformation)
             self.middlepoint_display.setPixmap(scaled_pixmap)
-        except :
+        except Exception as e:
+            print(e)
             error()
 
     def update_os(self):
@@ -424,7 +437,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.os_progress_bar.setValue(100)
             self.update_cost_button.setStyleSheet("background-color : lightblue")
             self.show_os_button.setStyleSheet("background-color : lightblue")
-        except:
+        except Exception as e:
+            print(e)
             error()
             self.update_cost_button.setStyleSheet("background-color : red")
             self.show_os_button.setStyleSheet("background-color : red")
@@ -550,7 +564,8 @@ class CrackToolsApplication(Ui_MainWindow):
             scaled_pixmap = pixmap.scaled(self.cost_display.width(), self.cost_display.height(), Qt.KeepAspectRatio, Qt.FastTransformation)
             self.cost_display.setPixmap(scaled_pixmap)
             self.midline_track_button.setStyleSheet("background-color : lightblue")
-        except:
+        except Exception as e:
+            print(e)
             error()
             self.midline_track_button.setStyleSheet("background-color : red")
 
@@ -598,7 +613,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.update_track_display_button.setStyleSheet("background-color : lightblue")
             self.track_full_screen_button.setStyleSheet("background-color : lightblue")
             self.edge_mask_button.setStyleSheet("background-color : lightblue")
-        except :
+        except Exception as e:
+            print(e)
             error()
             self.update_track_display_button.setStyleSheet("background-color : red")
             self.track_full_screen_button.setStyleSheet("background-color : red")
@@ -624,7 +640,8 @@ class CrackToolsApplication(Ui_MainWindow):
             pixmap = QPixmap.fromImage(qimage)
             scaled_pixmap = pixmap.scaled(self.track_display.width(), self.track_display.height(), Qt.KeepAspectRatio, Qt.FastTransformation)
             self.track_display.setPixmap(scaled_pixmap)
-        except:
+        except Exception as e:
+            print(e)
             error()
 
     def track_full_screen(self):
@@ -647,11 +664,17 @@ class CrackToolsApplication(Ui_MainWindow):
             plt.imshow(im)
             plt.plot(self.track[0],self.track[1],color = c,linewidth=w)
             plt.show()
-        except :
+        except Exception as e:
+            print(e)
             error()
 
     def edge_mask(self):
         try:
+            if not self.track:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setText("No track defined")
+                return
             window_half_size = int(self.edge_filter_size_box.value()/2)
 
             y_margin = self.y_margin_box.value()
@@ -674,7 +697,8 @@ class CrackToolsApplication(Ui_MainWindow):
             scaled_pixmap = pixmap.scaled(self.edge_map_display.width(), self.edge_map_display.height(), Qt.KeepAspectRatio, Qt.FastTransformation)
             self.edge_map_display.setPixmap(scaled_pixmap)
             self.edge_tracks_button.setStyleSheet("background-color : lightblue")
-        except:
+        except Exception as e:
+            print(e)
             error()
             self.edge_tracks_button.setStyleSheet("background-color : red")
 
@@ -726,7 +750,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.edge_tracks_full_screen_button.setStyleSheet("background-color : lightblue")
             self.edge_tracks_full_screen_button.setStyleSheet("background-color : lightblue")
             self.save_current_segment_button.setStyleSheet("background-color : lightblue")
-        except :
+        except Exception as e:
+            print(e)
             error()
             self.edge_tracks_full_screen_button.setStyleSheet("background-color : reed")
             self.edge_tracks_full_screen_button.setStyleSheet("background-color : red")
@@ -749,7 +774,8 @@ class CrackToolsApplication(Ui_MainWindow):
             plt.plot(self.track_e1[0],self.track_e1[1],color = c,linewidth=w)
             plt.plot(self.track_e2[0],self.track_e2[1],color = c,linewidth=w)
             plt.show()
-        except:
+        except Exception as e:
+            print(e)
             error()
 
     def save_current_segment(self):
@@ -780,7 +806,8 @@ class CrackToolsApplication(Ui_MainWindow):
 
             self.save_annotation()
 
-        except :
+        except Exception as e:
+            print(e)
             error()
 
         # plt.imshow(m)
@@ -808,7 +835,8 @@ class CrackToolsApplication(Ui_MainWindow):
             pixmap = QPixmap.fromImage(qimage)
             scaled_pixmap = pixmap.scaled(self.manual_segment_screen.width(), self.manual_segment_screen.height(), Qt.KeepAspectRatio, Qt.FastTransformation)
             self.manual_segment_screen.setPixmap(scaled_pixmap)
-        except :
+        except Exception as e:
+            print(e)
             error()
 
 
@@ -819,7 +847,8 @@ class CrackToolsApplication(Ui_MainWindow):
             plt.imshow(im)
             plt.plot(self.manuall_x,self.manuall_y,'r',linewidth = 1)
             plt.show()
-        except:
+        except Exception as e:
+            print(e)
             error()
 
     def save_manual_segment(self):
@@ -835,7 +864,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.image = im
 
             self.save_annotation()
-        except:
+        except Exception as e:
+            print(e)
             error()
 
     def save_annotation(self):
@@ -863,7 +893,8 @@ class CrackToolsApplication(Ui_MainWindow):
             self.edge_tracks_button.setStyleSheet("background-color : red")
             self.edge_tracks_full_screen_button.setStyleSheet("background-color : red")
             self.save_current_segment_button.setStyleSheet("background-color : red")
-        except:
+        except Exception as e:
+            print(e)
             error()
 
 if __name__ == "__main__":
