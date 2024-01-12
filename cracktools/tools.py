@@ -322,9 +322,9 @@ class Draw():
         self.scale2 = 1   
         self.scale2x = 1
         self.scale2y = 1
-    
-        
-        cv2.namedWindow('draw points')
+
+        cv2.namedWindow('draw points', cv2.WINDOW_NORMAL)
+        cv2.setWindowProperty('draw points', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         cv2.moveWindow('draw points', move_x, move_y)
         cv2.setMouseCallback('draw points',self.put_points)
 
@@ -434,9 +434,9 @@ class Draw():
         self.scale2x = 1
         self.scale2y = 1
         self.active = False
-    
         
-        cv2.namedWindow('draw bb')
+        cv2.namedWindow('draw bb', cv2.WINDOW_NORMAL)
+        cv2.setWindowProperty('draw bb', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         cv2.moveWindow('draw bb', move_x, move_y)
         cv2.setMouseCallback('draw bb',self.bb)
 
